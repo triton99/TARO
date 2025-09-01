@@ -1,0 +1,13 @@
+accelerate==1.2.0
+av==10.0.0
+diffusers==0.31.0
+einops==0.8.0
+ffmpeg-python==0.2.0
+h5py==3.10.0
+mmcv==1.7.0
+numpy==1.23.5
+opencv-python==4.5.5.64
+soundfile==0.12.1
+timm==1.0.12
+transformers==4.47.0
+wandb==0.19.0

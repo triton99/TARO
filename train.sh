@@ -1,0 +1,15 @@
+CUDA_VISIBLE_DEVICES=0 accelerate launch train.py \
+  --report-to="wandb" \
+  --allow-tf32 \
+  --mixed-precision="fp16" \
+  --seed=0 \
+  --path-type="linear" \
+  --prediction="v" \
+  --weighting="uniform" \
+  --model="SiT-B/2" \
+  --enc-type="eat-base" \
+  --proj-coeff=0.5 \
+  --encoder-depth=4 \
+  --output-dir="exps" \
+  --exp-name="taro-output" \
+  --data-dir="./VGGSound" \

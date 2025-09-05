@@ -7,29 +7,14 @@ import torchvision.transforms as transforms
 from cavp_util import reencode_video_with_diff_fps
 
 
-def extract_onset(video_path, onset_ckpt_path, tmp_path, device="cuda"):
+def extract_onset(video_path, onset_model, tmp_path, device="cuda"):
     """Extract onset features from video using a pre-trained onset detection model."""
-    # Adjust the state_dict keys
-    state_dict = torch.load(onset_ckpt_path)["state_dict"]
-    new_state_dict = {}
-    for key, value in state_dict.items():
-        if "model.net.model" in key:
-            new_key = key.replace("model.net.model", "net.model")  # Adjust the key as needed
-        elif "model.fc." in key:
-            new_key = key.replace("model.fc", "fc")  # Adjust the key as needed
-        new_state_dict[new_key] = value
-
     # Preprocess the video frames
     transform = transforms.Compose([
         transforms.Resize((128, 128), antialias=True),
         transforms.CenterCrop((112, 112)),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
-
-    # Load the pre-trained onset detection model
-    onset_model = VideoOnsetNet(False).to(device)
-    onset_model.load_state_dict(new_state_dict)
-    onset_model.eval()
 
     start_second = 0
     truncate_second = 10

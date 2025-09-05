@@ -4,6 +4,7 @@ diffusers==0.31.0
 einops==0.8.0
 ffmpeg-python==0.2.0
 h5py==3.10.0
+librosa==0.10.2.post1
 mmcv==1.7.0
 numpy==1.23.5
 opencv-python==4.5.5.64

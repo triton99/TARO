@@ -9,8 +9,8 @@ from argparse import ArgumentParser
 from diffusers import AudioLDM2Pipeline
 from models import MMDiT
 from samplers import euler_sampler, euler_maruyama_sampler
-from cavp_util import Extract_CAVP_Features 
-from onset_util import extract_onset
+from cavp_util import Extract_CAVP_Features
+from onset_util import VideoOnsetNet, extract_onset
 
 def set_global_seed(seed):
     np.random.seed(seed % (2**32))
@@ -40,6 +40,19 @@ def main():
     # Load models
     extract_cavp = Extract_CAVP_Features(device=device, config_path=args.cavp_config_path, ckpt_path=args.cavp_ckpt_path)
 
+    # Load the pre-trained onset detection model
+    state_dict = torch.load(args.onset_ckpt_path)["state_dict"]
+    new_state_dict = {}
+    for key, value in state_dict.items():
+        if "model.net.model" in key:
+            new_key = key.replace("model.net.model", "net.model")  # Adjust the key as needed
+        elif "model.fc." in key:
+            new_key = key.replace("model.fc", "fc")  # Adjust the key as needed
+        new_state_dict[new_key] = value
+    onset_model = VideoOnsetNet(False).to(device)
+    onset_model.load_state_dict(new_state_dict)
+    onset_model.eval()
+
     model = MMDiT(
         adm_in_channels=120,
         z_dims = [768],
@@ -60,7 +73,7 @@ def main():
     video_name = os.path.basename(args.video_path).split(".")[0]
 
     cavp_feats = extract_cavp(args.video_path, tmp_path=args.save_folder_path)
-    onset_feats = extract_onset(args.video_path, args.onset_ckpt_path, tmp_path=args.save_folder_path, device=device)
+    onset_feats = extract_onset(args.video_path, onset_model, tmp_path=args.save_folder_path, device=device)
 
     # Parameters for inference
     sr = 16000

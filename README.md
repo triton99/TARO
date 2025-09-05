@@ -25,7 +25,7 @@
 ## To-Dos
 - [x] Release model weights on Google Drive.
 - [x] Release inference code
-- [ ] Release training code & dataset preparation
+- [x] Release training code & dataset preparation
 
 ## ⚙️ Environmental Setups
 1. Clone TARO.
@@ -39,15 +39,55 @@ cd TARO
 conda create -n taro python==3.10
 conda activate taro
 pip install torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0 --index-url https://download.pytorch.org/whl/cu121
+
+# Training
+pip install --force pip==24.0
+git clone https://github.com/pytorch/fairseq
+cd fairseq
+pip install --editable ./ --no-build-isolation
+cd ..
+
+git clone https://github.com/cwx-worst-one/EAT.git
+
+# Inference
 pip3 install -r requirements.txt
 ```
 
 ## 📁 Data Preparations
-The code will be made available soon.
+Please download the [VGGSound dataset](https://www.robots.ox.ac.uk/~vgg/data/vggsound/), extract the videos, and organize them into two folders: one with .mp4 files and one with corresponding .wav files (matching base filenames). 
+
+Update the path variables at the top of the preprocessing scripts to point to your folders, then run:
+```bash
+./preprocess_video.sh
+
+./preprocess_audio.sh
+```
+
+After processing, the data will have the following structure:
+```bash
+VGGSound/train
+    ├── videos
+    │   ├── abc.mp4
+    │   └── ...
+    ├── audios
+    │   ├── abc.wav
+    │   └── ...
+    ├── cavp_feats
+    │   ├── abc.npz
+    │   └── ...
+    ├── onset_feats
+    │   ├── abc.npz
+    │   └── ...
+    ├── melspec
+    │   ├── abc.npy
+    │   └── ...
+    └── fbank
+    │   ├── abc.npy
+    │   └── ...
+```
+
 
 ## 🚀 Getting Started
-### Training
-The code will be made available soon.
 
 ### Download Checkpoints
 
@@ -57,16 +97,21 @@ The CAVP checkpoint can be downloaded from [Diff-Foley](https://github.com/luosi
 
 The onset checkpoint can be downloaded from [SyncFusion](https://github.com/mcomunita/syncfusion).
 
+### Training
+```bash
+./train.sh
+```
+
 ### Inference
 To run the inference code, you can use the following command:
 ```bash
 python infer.py \
---video_path ./test.mp4 \
---save_folder_path ./output \
---cavp_config_path ./cavp/model/cavp.yaml \
---cavp_ckpt_path ./cavp_epoch66.ckpt \
---onset_ckpt_path ./onset_model.ckpt \
---model_ckpt_path ./taro_ckpt.pt
+    --video_path ./test.mp4 \
+    --save_folder_path ./output \
+    --cavp_config_path ./cavp/model/cavp.yaml \
+    --cavp_ckpt_path ./cavp_epoch66.ckpt \
+    --onset_ckpt_path ./onset_model.ckpt \
+    --model_ckpt_path ./taro_ckpt.pt
 ```
 
 ## 📖 Citing TARO

@@ -18,7 +18,7 @@
 </p>
 
 ## 📣 News
-- **[09/2025]**: Inference code released.
+- **[09/2025]**: Training & Inference code released.
 - **[06/2025]**: TARO accepted to ICCV 2025 🎉.
 - **[04/2024]**: Paper uploaded to arXiv. Check out the manuscript [here](https://arxiv.org/abs/2504.05684).(https://arxiv.org/abs/2504.05684).
 
